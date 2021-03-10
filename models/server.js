@@ -1,22 +1,26 @@
 const express = require("express");
+const cors = require("cors");
 
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+    this.usersRoutesPath = "/api/users";
     this.middlewares();
     this.routes();
   }
 
   middlewares() {
+    this.app.use(cors());
+    // Parser body
+    this.app.use(express.json());
     this.app.use(express.static("public"));
   }
 
   routes() {
-    this.app.get("/", (req, res) => {
-      res.send("Holis cara  de bolis");
-    });
+    this.app.use(this.usersRoutesPath, require("../routes/user.routes"));
   }
+
   listen() {
     this.app.listen(this.port, () => {
       console.log(`Escuchando en el puerto ${this.port}`);
